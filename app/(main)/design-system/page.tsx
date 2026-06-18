@@ -130,16 +130,6 @@ export default function DesignSystemPage() {
           </div>
         </section>
 
-        {/* Mock users (dev) */}
-        <section className="space-y-6">
-          <h2 className={typography.h2}>Mock Users</h2>
-          <p className={typography.body}>
-            In development, use the floating <strong>Dev: mock user</strong> panel
-            (bottom-right) to sign in as Ada (home seeker), Chidi (both roles),
-            or Emeka (agent only).
-          </p>
-        </section>
-
         {/* Color palette */}
         <section className="space-y-6">
           <h2 className={typography.h2}>Color Palette</h2>

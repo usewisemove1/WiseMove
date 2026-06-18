@@ -3,7 +3,6 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import AuthStoreSync from "@/components/auth/AuthStoreSync";
-import MockUserSwitcher from "@/components/auth/MockUserSwitcher";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import { clerkLocalization } from "@/lib/clerkLocalization";
@@ -36,7 +35,6 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-          <MockUserSwitcher />
         </body>
       </html>
     </ClerkProvider>

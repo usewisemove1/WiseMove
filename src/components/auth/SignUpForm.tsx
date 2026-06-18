@@ -12,13 +12,6 @@ import { cn } from "@/lib/utils";
 
 type Step = "form" | "verify-email";
 
-function splitFullName(fullName: string): { firstName: string; lastName: string } {
-  const parts = fullName.trim().split(/\s+/).filter(Boolean);
-  const firstName = parts[0] ?? "";
-  const lastName = parts.slice(1).join(" ");
-  return { firstName, lastName };
-}
-
 function normalizePhoneNumber(phone: string): string {
   return phone.replace(/\s+/g, "");
 }
@@ -32,7 +25,8 @@ export default function SignUpForm() {
   const { signUp, setActive, isLoaded } = useSignUp();
 
   const [step, setStep] = useState<Step>("form");
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -68,9 +62,13 @@ export default function SignUpForm() {
       return;
     }
 
-    const { firstName, lastName } = splitFullName(fullName);
-    if (!firstName) {
-      setError("Please enter your full name.");
+    if (!firstName.trim()) {
+      setError("Please enter your first name.");
+      return;
+    }
+
+    if (!lastName.trim()) {
+      setError("Please enter your last name.");
       return;
     }
 
@@ -81,8 +79,8 @@ export default function SignUpForm() {
       const result = await signUp.create({
         emailAddress: email.trim(),
         password,
-        firstName,
-        lastName: lastName || undefined,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
         phoneNumber: phone.trim() ? normalizePhoneNumber(phone) : undefined,
       });
 
@@ -200,38 +198,55 @@ export default function SignUpForm() {
       <form onSubmit={handleRegister} className="space-y-3" noValidate>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <label htmlFor="full-name" className="text-sm font-semibold text-foreground">
-              Full Name
+            <label htmlFor="first-name" className="text-sm font-semibold text-foreground">
+              First Name
             </label>
             <input
-              id="full-name"
+              id="first-name"
               type="text"
-              name="name"
-              autoComplete="name"
-              placeholder="John Doe"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              name="given-name"
+              autoComplete="given-name"
+              placeholder="John"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               required
               className={authInputClassNameCompact}
             />
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="register-email" className="text-sm font-semibold text-foreground">
-              Email Address
+            <label htmlFor="last-name" className="text-sm font-semibold text-foreground">
+              Last Name
             </label>
             <input
-              id="register-email"
-              type="email"
-              name="email"
-              autoComplete="email"
-              placeholder="john@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="last-name"
+              type="text"
+              name="family-name"
+              autoComplete="family-name"
+              placeholder="Doe"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               required
               className={authInputClassNameCompact}
             />
           </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="register-email" className="text-sm font-semibold text-foreground">
+            Email Address
+          </label>
+          <input
+            id="register-email"
+            type="email"
+            name="email"
+            autoComplete="email"
+            placeholder="john@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className={authInputClassNameCompact}
+          />
         </div>
 
         <div className="space-y-1.5">
