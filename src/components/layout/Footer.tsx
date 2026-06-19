@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import FooterCountryIndicator from "@/components/layout/FooterCountryIndicator";
+import Logo from "@/components/layout/Logo";
 import PageShell from "@/components/layout/PageShell";
 import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
@@ -90,12 +91,7 @@ export default function Footer() {
       <PageShell dataComponent="footer" innerClassName="py-12 sm:py-16">
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
             <div className="space-y-4">
-              <Link
-                href="/"
-                className="inline-block text-2xl font-bold text-primary transition-opacity hover:opacity-90"
-              >
-                WiseMove
-              </Link>
+              <Logo variant="wordmark" />
               <p
                 className={cn(
                   typography.body,

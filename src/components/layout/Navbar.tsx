@@ -7,6 +7,7 @@ import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
 import { Bell, Heart, LayoutDashboard, LogOut, Menu } from "lucide-react";
 
 import CountrySwitcher from "@/components/layout/CountrySwitcher";
+import Logo from "@/components/layout/Logo";
 import PageShell from "@/components/layout/PageShell";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +21,6 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { typography } from "@/lib/typography";
@@ -353,12 +353,7 @@ export default function Navbar() {
             data-component="navbar-start"
             className="flex min-w-0 items-center gap-6 lg:gap-10"
           >
-            <Link
-              href="/"
-              className="shrink-0 text-xl font-bold text-primary transition-opacity hover:opacity-90"
-            >
-              WiseMove
-            </Link>
+            <Logo variant="wordmark" />
 
             <Suspense
               fallback={
@@ -401,9 +396,7 @@ export default function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-sm">
                 <SheetHeader>
-                  <SheetTitle className="text-left text-primary">
-                    Menu
-                  </SheetTitle>
+                  <Logo variant="icon" href={null} />
                 </SheetHeader>
                 <div className="mt-8 flex flex-col gap-8">
                   <Suspense fallback={null}>
