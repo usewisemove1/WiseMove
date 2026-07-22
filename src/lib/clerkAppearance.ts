@@ -2,7 +2,7 @@ import type { Appearance } from "@clerk/types";
 
 const primaryGreen = "hsl(152 55% 23%)";
 
-/** Shared Clerk theme aligned with WiseMove / Amaafi brand. */
+/** Shared Clerk theme aligned with WiseMove / WiseMove brand. */
 export const clerkAppearance: Appearance = {
   variables: {
     colorPrimary: primaryGreen,

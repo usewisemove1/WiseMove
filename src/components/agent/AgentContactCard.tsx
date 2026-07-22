@@ -77,7 +77,7 @@ export default function AgentContactCard({
             onClick={() => setBookingOpen(true)}
           >
             <Calendar className="h-4 w-4" />
-            Book a View
+            Schedule Viewing
           </Button>
 
           <Button

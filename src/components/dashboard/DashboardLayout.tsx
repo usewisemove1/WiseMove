@@ -9,7 +9,7 @@ import {
   Heart,
   Home,
   LayoutDashboard,
-  MessageSquare,
+  MessageSquare, UserRound,
   type LucideIcon,
 } from "lucide-react";
 
@@ -19,7 +19,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import type { UserRole } from "@/types";
 
 type HomeSeekerView = "overview" | "saved" | "activity" | "alerts";
-type AgentView = "overview" | "listings" | "inquiries";
+type AgentView = "overview" | "listings" | "inquiries" | "profile";
 export type DashboardView = HomeSeekerView | AgentView;
 
 interface NavItem {
@@ -39,6 +39,7 @@ const AGENT_NAV: NavItem[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "listings", label: "My Listings", icon: Building2 },
   { id: "inquiries", label: "Inquiries Received", icon: MessageSquare },
+  { id: "profile", label: "Agent Profile", icon: UserRound },
 ];
 
 interface DashboardLayoutProps {
@@ -63,9 +64,8 @@ function RoleSwitch({ mobile = false }: { mobile?: boolean }) {
   const handleSingleRoleSwitch = () => {
     const otherRole: UserRole =
       activeRole === "home_seeker" ? "agent" : "home_seeker";
-    // TODO: this should trigger a proper onboarding flow when backend exists
     addRole(otherRole);
-    router.push("/dashboard?view=overview");
+    router.push(otherRole === "agent" ? "/agent/verification" : "/dashboard?view=overview");
   };
 
   if (isAgentOnly) {
@@ -119,7 +119,7 @@ function RoleSwitch({ mobile = false }: { mobile?: boolean }) {
     );
   }
 
-  const otherLabel = "Switch to Agent";
+  const otherLabel = "Become an Agent";
 
   return (
     <button
@@ -242,7 +242,7 @@ export function isValidViewForRole(
   role: UserRole
 ): view is DashboardView {
   if (role === "agent") {
-    return ["overview", "listings", "inquiries"].includes(view);
+    return ["overview", "listings", "inquiries", "profile"].includes(view);
   }
   return ["overview", "saved", "activity", "alerts"].includes(view);
 }

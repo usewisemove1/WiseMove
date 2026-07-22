@@ -54,7 +54,7 @@ export default function TrustScoreBreakdown({
       </ul>
 
       <p className="border-t border-border px-5 py-3 text-xs italic leading-relaxed text-muted-foreground">
-        All documents for this property have been physically verified by Amaafi
+        All documents for this property have been physically verified by The WiseMove
         legal team.
       </p>
     </div>
