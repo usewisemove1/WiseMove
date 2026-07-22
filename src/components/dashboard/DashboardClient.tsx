@@ -7,6 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import AgentOverview from "@/components/dashboard/agent/Overview";
 import InquiriesReceived from "@/components/dashboard/agent/InquiriesReceived";
 import MyListings from "@/components/dashboard/agent/MyListings";
+import AgentProfile from "@/components/dashboard/agent/AgentProfile";
 import DashboardLayout, {
   isValidViewForRole,
   type DashboardView,
@@ -26,6 +27,8 @@ function DashboardContent({ view }: { view: DashboardView }) {
         return <MyListings />;
       case "inquiries":
         return <InquiriesReceived />;
+      case "profile":
+        return <AgentProfile />;
       case "overview":
       default:
         return <AgentOverview />;

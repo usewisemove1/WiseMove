@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import AgentContactCard from "@/components/agent/AgentContactCard";
+import BackToResultsButton from "@/components/agent/BackToResultsButton";
 import PageShell from "@/components/layout/PageShell";
 import AmenitiesGrid from "@/components/property/AmenitiesGrid";
 import PropertyCard from "@/components/property/PropertyCard";
@@ -113,7 +114,7 @@ export default function PropertyDetailClient({
     const url = window.location.href;
     const shareData = {
       title: property.title,
-      text: `Check out ${property.title} on Amaafi`,
+      text: `Check out ${property.title} on WiseMove`,
       url,
     };
 
@@ -166,6 +167,9 @@ export default function PropertyDetailClient({
       )}
 
       <PageShell dataComponent="property-detail" innerClassName="py-5">
+        <div className="mb-4">
+          <BackToResultsButton label="Back to search results" fallback="/search" />
+        </div>
         {/* Breadcrumb + actions */}
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <nav aria-label="Breadcrumb" className="min-w-0">
