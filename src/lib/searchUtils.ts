@@ -28,6 +28,8 @@ export function filtersToSearchParams(
   const params = new URLSearchParams();
 
   if (filters.location) params.set("location", filters.location);
+  if (filters.state) params.set("state", filters.state);
+  if (filters.amenities?.length) params.set("amenities", filters.amenities.join(","));
   if (filters.propertyType) params.set("type", filters.propertyType);
   if (filters.priceMin !== undefined) {
     params.set("priceMin", String(filters.priceMin));
@@ -78,6 +80,8 @@ export function searchParamsToFilters(
   return {
     filters: {
       location: params.get("location") ?? undefined,
+      state: params.get("state") ?? undefined,
+      amenities: params.get("amenities")?.split(",").filter(Boolean),
       propertyType,
       priceMin: parseNumber(params.get("priceMin")),
       priceMax: parseNumber(params.get("priceMax")),
@@ -97,6 +101,8 @@ export function hasActiveFilters(filters: Filter): boolean {
     filters.priceMax !== undefined ||
     filters.bedrooms !== undefined ||
     filters.bathrooms !== undefined ||
+    filters.state !== undefined ||
+    Boolean(filters.amenities?.length) ||
     (filters.trustScoreMin !== undefined && filters.trustScoreMin > 0)
   );
 }
@@ -142,8 +148,12 @@ export function filterProperties(
     ) {
       return false;
     }
+    if (filters.state && property.state !== filters.state) return false;
+    return !(filters.amenities?.length && !filters.amenities.every((amenity) =>
+        property.amenities.some((propertyAmenity) => propertyAmenity.name === amenity && propertyAmenity.available)
+    ));
 
-    return true;
+
   });
 }
 

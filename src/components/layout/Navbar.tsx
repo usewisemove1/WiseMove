@@ -29,10 +29,10 @@ import { useAuthStore } from "@/store/useAuthStore";
 import type { User } from "@/types";
 
 const navLinks = [
-  { label: "Rent", href: "/search?type=rent", matchType: "rent" },
-  { label: "Buy", href: "/search?type=sale", matchType: "sale" },
-  { label: "Shortlet", href: "/search?type=shortlet", matchType: "shortlet" },
-  { label: "Invest", href: "/search?type=invest", matchType: "invest" },
+  { label: "Rent", href: "/rent", matchType: "rent" },
+  { label: "Buy", href: "/buy", matchType: "sale" },
+  { label: "Shortlet", href: "/shortlet", matchType: "shortlet" },
+  { label: "Invest", href: "/invest", matchType: "invest" },
 ] as const;
 
 function getInitials(name: string): string {
@@ -50,9 +50,11 @@ function isNavLinkActive(
   searchParams: URLSearchParams,
   matchType: string
 ): boolean {
-  if (pathname === "/") {
-    return matchType === "rent";
-  }
+  if (pathname === "/") return false;
+  if (pathname === "/rent") return matchType === "rent";
+  if (pathname === "/buy") return matchType === "sale";
+  if (pathname === "/shortlet") return matchType === "shortlet";
+  if (pathname === "/invest") return matchType === "invest";
 
   if (pathname !== "/search") return false;
 
@@ -347,14 +349,17 @@ export default function Navbar() {
     >
       <PageShell
         dataComponent="navbar"
-        innerClassName="flex h-16 w-full items-center justify-between gap-4"
+        innerClassName="relative flex h-16 w-full items-center justify-between gap-4"
       >
           <div
             data-component="navbar-start"
-            className="flex min-w-0 items-center gap-6 lg:gap-10"
+            className="flex min-w-0 items-center"
           >
             <Logo variant="wordmark" />
 
+          </div>
+
+          <div className="absolute left-1/2 hidden -translate-x-1/2 lg:block">
             <Suspense
               fallback={
                 <nav className="hidden items-center gap-6 lg:flex lg:gap-8">
@@ -369,7 +374,7 @@ export default function Navbar() {
                 </nav>
               }
             >
-              <NavLinks className="hidden lg:flex" />
+              <NavLinks />
             </Suspense>
           </div>
 
