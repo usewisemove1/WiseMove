@@ -12,6 +12,8 @@ WiseMove is a property discovery platform focused on trusted listings across Afr
 - **Authentication:** [Clerk](https://clerk.com/)
 - **Font:** Plus Jakarta Sans via `next/font`
 
+
+
 ## Project Structure
 
 ```
@@ -26,40 +28,42 @@ src/
   types/                # Shared TypeScript interfaces
 ```
 
+
+
 ## Getting Started
+
+
 
 ### Prerequisites
 
 - Node.js 18+
 - npm
 
+
+
 ### Installation
 
 1. Clone the repository and install dependencies:
-
-   ```bash
+  ```bash
    npm install
-   ```
-
+  ```
 2. Copy the environment variables file and fill in your values:
-
-   ```bash
+  ```bash
    cp .env.local.example .env.local
-   ```
-
+  ```
    Required for authentication — create a free account at [clerk.com](https://clerk.com/) and add your keys:
-   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-   - `CLERK_SECRET_KEY`
-
+  - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+  - `CLERK_SECRET_KEY`
 3. Start the development server:
-
-   ```bash
+  ```bash
    npm run dev
-   ```
-
+  ```
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+
+
 ## Available Scripts
+
 
 | Command         | Description              |
 | --------------- | ------------------------ |
@@ -67,6 +71,9 @@ src/
 | `npm run build` | Create production build  |
 | `npm run start` | Start production server  |
 | `npm run lint`  | Run ESLint               |
+
+
+
 
 ## Adding shadcn/ui Components
 
@@ -76,9 +83,12 @@ Components are configured in `components.json` and live in `src/components/ui/`.
 npx shadcn@2.3.0 add button
 ```
 
+
+
 ## Environment Variables
 
 See `.env.local.example` for the full list. Key variables:
+
 
 | Variable                            | Description                    |
 | ----------------------------------- | ------------------------------ |
@@ -88,4 +98,10 @@ See `.env.local.example` for the full list. Key variables:
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name (images) |
 | `DATABASE_URL`                      | Database connection string     |
 
+
+
+
 # wisemove
+
+test for github action
+
