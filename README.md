@@ -48,7 +48,6 @@ src/
    ```
 
    Required for authentication — create a free account at [clerk.com](https://clerk.com/) and add your keys:
-
    - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
    - `CLERK_SECRET_KEY`
 
@@ -81,10 +80,12 @@ npx shadcn@2.3.0 add button
 
 See `.env.local.example` for the full list. Key variables:
 
-| Variable                              | Description                    |
-| ------------------------------------- | ------------------------------ |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`   | Clerk public key               |
-| `CLERK_SECRET_KEY`                    | Clerk secret key               |
-| `NEXT_PUBLIC_MAPBOX_TOKEN`            | Mapbox API token (maps)        |
-| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`   | Cloudinary cloud name (images) |
-| `DATABASE_URL`                        | Database connection string     |
+| Variable                            | Description                    |
+| ----------------------------------- | ------------------------------ |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk public key               |
+| `CLERK_SECRET_KEY`                  | Clerk secret key               |
+| `NEXT_PUBLIC_MAPBOX_TOKEN`          | Mapbox API token (maps)        |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name (images) |
+| `DATABASE_URL`                      | Database connection string     |
+
+# wisemove

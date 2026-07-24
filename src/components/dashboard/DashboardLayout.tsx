@@ -12,6 +12,7 @@ import {
   Search,
   Settings,
   User,
+  UserRound,
   type LucideIcon,
 } from "lucide-react";
 
@@ -28,7 +29,7 @@ type HomeSeekerView =
   | "alerts"
   | "profile"
   | "settings";
-type AgentView = "overview" | "listings" | "inquiries";
+type AgentView = "overview" | "listings" | "inquiries" | "profile";
 export type DashboardView = HomeSeekerView | AgentView;
 
 interface NavItem {
@@ -53,6 +54,7 @@ const AGENT_NAV: NavItem[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "listings", label: "My Listings", icon: Building2 },
   { id: "inquiries", label: "Inquiries Received", icon: MessageSquare },
+  { id: "profile", label: "Agent Profile", icon: UserRound },
 ];
 
 interface DashboardLayoutProps {
@@ -78,7 +80,7 @@ function RoleSwitch({ mobile = false }: { mobile?: boolean }) {
     const otherRole: UserRole =
       activeRole === "home_seeker" ? "agent" : "home_seeker";
     addRole(otherRole);
-    router.push("/dashboard?view=overview");
+    router.push(otherRole === "agent" ? "/agent/verification" : "/dashboard?view=overview");
   };
 
   if (isAgentOnly) {
@@ -303,7 +305,7 @@ export function isValidViewForRole(
   role: UserRole
 ): view is DashboardView {
   if (role === "agent") {
-    return ["overview", "listings", "inquiries"].includes(view);
+    return ["overview", "listings", "inquiries", "profile"].includes(view);
   }
   return [
     "overview",
