@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Bell, BookOpenText, Building2, CheckCircle2, Home, MapPin, Search, ShieldCheck } from "lucide-react";
+import { ArrowRight, BadgeCheck, Bell, BookOpenText, Building2, Home, MapPin, Search, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 

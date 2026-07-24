@@ -13,8 +13,7 @@ import {
   Pencil,
   Shield,
   Square,
-  TrendingDown,
-  } from "lucide-react";
+} from "lucide-react";
 
 import { cardBaseStyles, cn, formatPrice } from "@/lib/utils";
 import { getMockPropertyImage } from "@/lib/mockImages";
