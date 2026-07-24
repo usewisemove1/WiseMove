@@ -14,6 +14,21 @@ export interface MockUserSession {
 /** Dev-only personas for testing role-specific dashboard behaviour. */
 export const MOCK_USER_SESSIONS: MockUserSession[] = [
   {
+    key: "kehinde-home-seeker",
+    label: "Kehinde Olukayode",
+    description: "Home seeker only (default buyer/renter)",
+    user: {
+      id: "user_mock_seeker_kehinde",
+      name: "Kehinde Olukayode",
+      firstName: "Kehinde",
+      email: "kehinde.olukayode@example.com",
+      imageUrl:
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop",
+    },
+    roles: ["home_seeker"],
+    activeRole: "home_seeker",
+  },
+  {
     key: "home-seeker-only",
     label: "Ada Okonkwo",
     description: "Home seeker only (default buyer/renter)",

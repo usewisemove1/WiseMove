@@ -12,10 +12,28 @@ import type {
 // TODO: replace with real API calls when backend is ready
 
 export const MOCK_HOME_SEEKER_STATS = {
-  savedCount: 3,
-  activeAlerts: 2,
-  propertiesViewed: 14,
+  savedCount: 12,
+  savedThisWeek: 2,
+  activeAlerts: 4,
+  priorityAlerts: 4,
+  recentSearches: 8,
 };
+
+export const MOCK_USER_TRUST_SCORE = 840;
+
+export const MOCK_SAVED_PROPERTIES: Property[] = [
+  mockProperties[0],
+  mockProperties[1],
+  mockProperties[2],
+];
+
+export const MOCK_RECENT_SEARCHES = [
+  { id: "search-1", query: "Ikoyi Luxury" },
+  { id: "search-2", query: "VGC Duplex" },
+  { id: "search-3", query: "Lekki Phase 1" },
+  { id: "search-4", query: "Eko Atlantic" },
+  { id: "search-5", query: "Abuja GRA" },
+];
 
 export const MOCK_AGENT_STATS = {
   activeListings: 5,
@@ -92,8 +110,9 @@ export const MOCK_ACTIVITIES: Activity[] = [
 export const MOCK_ALERTS: PropertyAlert[] = [
   {
     id: "alert-1",
-    label: "Lekki rentals under ₦5M",
+    label: "3-Bed Apartments",
     location: "Lekki, Lagos",
+    priceRange: "₦2M - ₦5M",
     propertyType: "rent",
     isActive: true,
     matchCount: 12,
@@ -101,20 +120,22 @@ export const MOCK_ALERTS: PropertyAlert[] = [
   },
   {
     id: "alert-2",
-    label: "Eko Atlantic penthouses",
-    location: "Eko Atlantic, Lagos",
-    propertyType: "rent",
+    label: "Shortlet Studio",
+    location: "Victoria Island",
+    priceRange: "₦80K - ₦500K per night",
+    propertyType: "shortlet",
     isActive: true,
     matchCount: 4,
     createdAt: new Date("2026-04-20"),
   },
   {
     id: "alert-3",
-    label: "Abuja villas for sale",
-    location: "Abuja, FCT",
+    label: "Luxury Penthouses",
+    location: "Eko Atlantic",
+    priceRange: "₦15M - ₦50M",
     propertyType: "sale",
-    isActive: false,
-    matchCount: 0,
+    isActive: true,
+    matchCount: 3,
     createdAt: new Date("2026-03-15"),
   },
 ];

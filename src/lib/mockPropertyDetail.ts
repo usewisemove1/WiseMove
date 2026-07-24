@@ -1,19 +1,8 @@
 import { getMockPropertyImage } from "@/lib/mockImages";
-import type { Agent, DetailTrustBreakdown, Property } from "@/types";
+import { MOCK_AGENT } from "@/lib/mockAgentProfile";
+import type { DetailTrustBreakdown, Property } from "@/types";
 
-export const MOCK_AGENT: Agent = {
-  id: "agent-emeka-001",
-  name: "Emeka Okafor",
-  title: "Senior Portfolio Manager",
-  photo: "https://placehold.co/100x100.jpg",
-  phone: "2348012345678",
-  whatsapp: "2348012345678",
-  email: "emeka.okafor@amaafi.com",
-  isVerified: true,
-  responseTime: "Under 1 hour",
-  totalListings: 24,
-  rating: 4.9,
-};
+export { MOCK_AGENT };
 
 export const MOCK_DETAIL_TRUST: DetailTrustBreakdown = {
   ownership: 100,

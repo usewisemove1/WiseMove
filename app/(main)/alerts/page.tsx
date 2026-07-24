@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function AlertsPage() {
-  return <div>Alerts</div>;
+  redirect("/dashboard/alerts");
 }
