@@ -5,20 +5,29 @@ import { useRouter } from "next/navigation";
 import {
   Bell,
   Building2,
-  Clock,
   Heart,
   Home,
   LayoutDashboard,
   MessageSquare,
+  Search,
+  Settings,
+  User,
   type LucideIcon,
 } from "lucide-react";
 
+import SidebarTrustScoreCard from "@/components/dashboard/SidebarTrustScoreCard";
 import PageShell from "@/components/layout/PageShell";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { UserRole } from "@/types";
 
-type HomeSeekerView = "overview" | "saved" | "activity" | "alerts";
+type HomeSeekerView =
+  | "overview"
+  | "saved"
+  | "searches"
+  | "alerts"
+  | "profile"
+  | "settings";
 type AgentView = "overview" | "listings" | "inquiries";
 export type DashboardView = HomeSeekerView | AgentView;
 
@@ -28,11 +37,16 @@ interface NavItem {
   icon: LucideIcon;
 }
 
-const HOME_SEEKER_NAV: NavItem[] = [
+const HOME_SEEKER_MAIN_NAV: NavItem[] = [
   { id: "overview", label: "Overview", icon: Home },
-  { id: "saved", label: "Saved Properties", icon: Heart },
-  { id: "activity", label: "Recent Activity", icon: Clock },
+  { id: "saved", label: "Saved", icon: Heart },
   { id: "alerts", label: "Alerts", icon: Bell },
+  { id: "searches", label: "Searches", icon: Search },
+];
+
+const HOME_SEEKER_ACCOUNT_NAV: NavItem[] = [
+  { id: "profile", label: "Profile", icon: User },
+  { id: "settings", label: "Settings", icon: Settings },
 ];
 
 const AGENT_NAV: NavItem[] = [
@@ -63,7 +77,6 @@ function RoleSwitch({ mobile = false }: { mobile?: boolean }) {
   const handleSingleRoleSwitch = () => {
     const otherRole: UserRole =
       activeRole === "home_seeker" ? "agent" : "home_seeker";
-    // TODO: this should trigger a proper onboarding flow when backend exists
     addRole(otherRole);
     router.push("/dashboard?view=overview");
   };
@@ -119,8 +132,6 @@ function RoleSwitch({ mobile = false }: { mobile?: boolean }) {
     );
   }
 
-  const otherLabel = "Switch to Agent";
-
   return (
     <button
       type="button"
@@ -130,9 +141,14 @@ function RoleSwitch({ mobile = false }: { mobile?: boolean }) {
         mobile && "shrink-0 whitespace-nowrap"
       )}
     >
-      {otherLabel}
+      Switch to Agent
     </button>
   );
+}
+
+export function getDashboardNavHref(view: DashboardView): string {
+  if (view === "alerts") return "/dashboard/alerts";
+  return `/dashboard?view=${view}`;
 }
 
 function NavLink({
@@ -146,11 +162,11 @@ function NavLink({
 
   return (
     <Link
-      href={`/dashboard?view=${item.id}`}
+      href={getDashboardNavHref(item.id)}
       className={cn(
         "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
         isActive
-          ? "bg-primary/10 text-primary"
+          ? "bg-primary text-white shadow-sm"
           : "text-muted-foreground hover:bg-muted hover:text-foreground"
       )}
     >
@@ -160,18 +176,45 @@ function NavLink({
   );
 }
 
+function NavSection({
+  title,
+  items,
+  activeView,
+}: {
+  title: string;
+  items: NavItem[];
+  activeView: DashboardView;
+}) {
+  return (
+    <div className="px-3">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {title}
+      </p>
+      <nav className="space-y-1">
+        {items.map((item) => (
+          <NavLink
+            key={item.id}
+            item={item}
+            isActive={activeView === item.id}
+          />
+        ))}
+      </nav>
+    </div>
+  );
+}
+
 export default function DashboardLayout({
   activeView,
   children,
 }: DashboardLayoutProps) {
   const { activeRole } = useAuthStore();
-  const navItems = activeRole === "agent" ? AGENT_NAV : HOME_SEEKER_NAV;
+  const navItems = activeRole === "agent" ? AGENT_NAV : HOME_SEEKER_MAIN_NAV;
 
   return (
     <PageShell
       dataComponent="dashboard"
       innerClassName={cn(
-        "flex min-h-[calc(100vh-4rem)] flex-col lg:flex-row"
+        "flex min-h-[calc(100vh-4rem)] flex-col lg:flex-row lg:gap-10"
       )}
     >
       {/* Mobile tab bar */}
@@ -188,7 +231,7 @@ export default function DashboardLayout({
               return (
                 <Link
                   key={item.id}
-                  href={`/dashboard?view=${item.id}`}
+                  href={getDashboardNavHref(item.id)}
                   className={cn(
                     "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
                     isActive
@@ -209,28 +252,46 @@ export default function DashboardLayout({
       {/* Desktop sidebar */}
       <aside
         data-component="dashboard-sidebar"
-        className="hidden w-[260px] shrink-0 border-r border-border bg-white py-6 lg:block"
+        className="hidden w-[260px] shrink-0 flex-col border-r border-border bg-white py-6 lg:flex lg:min-h-[calc(100vh-4rem)]"
       >
-        <nav className="space-y-1">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.id}
-              item={item}
-              isActive={activeView === item.id}
+        {activeRole === "agent" ? (
+          <nav className="space-y-1 px-3">
+            {AGENT_NAV.map((item) => (
+              <NavLink
+                key={item.id}
+                item={item}
+                isActive={activeView === item.id}
+              />
+            ))}
+          </nav>
+        ) : (
+          <>
+            <NavSection
+              title="Main"
+              items={HOME_SEEKER_MAIN_NAV}
+              activeView={activeView}
             />
-          ))}
-        </nav>
+            <div className="mt-8">
+              <NavSection
+                title="Account"
+                items={HOME_SEEKER_ACCOUNT_NAV}
+                activeView={activeView}
+              />
+            </div>
+          </>
+        )}
 
-        <div className="mt-8 border-t border-border pt-6">
-          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Account
-          </p>
+        <div className="mt-auto space-y-4 px-3 pt-8">
+          {activeRole === "home_seeker" ? <SidebarTrustScoreCard /> : null}
           <RoleSwitch />
         </div>
       </aside>
 
       {/* Main content */}
-      <main data-component="dashboard-main" className="min-w-0 flex-1 py-6">
+      <main
+        data-component="dashboard-main"
+        className="min-w-0 flex-1 py-6 lg:py-8"
+      >
         {children}
       </main>
     </PageShell>
@@ -244,5 +305,12 @@ export function isValidViewForRole(
   if (role === "agent") {
     return ["overview", "listings", "inquiries"].includes(view);
   }
-  return ["overview", "saved", "activity", "alerts"].includes(view);
+  return [
+    "overview",
+    "saved",
+    "searches",
+    "alerts",
+    "profile",
+    "settings",
+  ].includes(view);
 }

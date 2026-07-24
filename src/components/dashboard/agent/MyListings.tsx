@@ -21,7 +21,7 @@ export default function MyListings() {
 
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         <Link
-          href="/dashboard/listings/new"
+          href="/list-property"
           className={cn(
             cardBaseStyles,
             "flex min-h-[280px] flex-col items-center justify-center gap-2 border-2 border-dashed border-primary/30 bg-primary/5 p-6 text-center transition-colors hover:border-primary/50 hover:bg-primary/10"

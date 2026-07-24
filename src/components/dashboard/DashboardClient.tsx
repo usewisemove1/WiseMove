@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 
@@ -11,10 +11,11 @@ import DashboardLayout, {
   isValidViewForRole,
   type DashboardView,
 } from "@/components/dashboard/DashboardLayout";
-import Alerts from "@/components/dashboard/homeseeker/Alerts";
 import HomeSeekerOverview from "@/components/dashboard/homeseeker/Overview";
-import RecentActivity from "@/components/dashboard/homeseeker/RecentActivity";
+import Profile from "@/components/dashboard/homeseeker/Profile";
+import RecentSearches from "@/components/dashboard/homeseeker/RecentSearches";
 import SavedProperties from "@/components/dashboard/homeseeker/SavedProperties";
+import Settings from "@/components/dashboard/homeseeker/Settings";
 import { useAuthStore } from "@/store/useAuthStore";
 
 function DashboardContent({ view }: { view: DashboardView }) {
@@ -35,10 +36,12 @@ function DashboardContent({ view }: { view: DashboardView }) {
   switch (view) {
     case "saved":
       return <SavedProperties />;
-    case "activity":
-      return <RecentActivity />;
-    case "alerts":
-      return <Alerts />;
+    case "searches":
+      return <RecentSearches />;
+    case "profile":
+      return <Profile />;
+    case "settings":
+      return <Settings />;
     case "overview":
     default:
       return <HomeSeekerOverview />;
@@ -46,6 +49,7 @@ function DashboardContent({ view }: { view: DashboardView }) {
 }
 
 export default function DashboardClient() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { isLoaded, isSignedIn } = useUser();
   const isMockAuth = useAuthStore((s) => s.isMockAuth);
@@ -53,6 +57,13 @@ export default function DashboardClient() {
   const user = useAuthStore((s) => s.user);
 
   const rawView = searchParams.get("view") ?? "overview";
+
+  useEffect(() => {
+    if (rawView === "alerts") {
+      router.replace("/dashboard/alerts");
+    }
+  }, [rawView, router]);
+
   const view: DashboardView = isValidViewForRole(rawView, activeRole)
     ? rawView
     : "overview";
@@ -75,6 +86,14 @@ export default function DashboardClient() {
 
   if (!hasAppSession) {
     return null;
+  }
+
+  if (rawView === "alerts") {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
+        Redirecting to alerts…
+      </div>
+    );
   }
 
   return (

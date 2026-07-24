@@ -61,6 +61,20 @@ export const countries: Country[] = [
 
 export const DEFAULT_COUNTRY = countries[0];
 
+/** Nigerian cities for listing location step */
+export const NIGERIAN_CITIES = [
+  "Lagos",
+  "Abuja",
+  "Port Harcourt",
+  "Ibadan",
+  "Kano",
+  "Enugu",
+  "Benin City",
+  "Calabar",
+] as const;
+
+export type NigerianCity = (typeof NIGERIAN_CITIES)[number];
+
 export interface CityCoordinate {
   name: string;
   latitude: number;
