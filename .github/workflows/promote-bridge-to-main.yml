@@ -9,10 +9,13 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  checks: read
+  statuses: read
 
 jobs:
   promote:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
@@ -44,10 +47,42 @@ jobs:
 
           echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
 
-      - name: Enable auto-merge
+      - name: Wait for pull request checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          echo "Waiting for checks on PR #$PR_NUMBER to start..."
+
+          # Vercel (and other integrations) can take a moment to report.
+          for i in $(seq 1 40); do
+            if gh pr checks "$PR_NUMBER" > /tmp/pr-checks.txt 2>/tmp/pr-checks.err; then
+              :
+            fi
+
+            if [ -s /tmp/pr-checks.txt ]; then
+              echo "Checks reported:"
+              cat /tmp/pr-checks.txt
+              break
+            fi
+
+            echo "No checks yet (attempt $i/40)..."
+            sleep 15
+          done
+
+          if [ ! -s /tmp/pr-checks.txt ]; then
+            echo "Timed out waiting for checks to start on PR #$PR_NUMBER"
+            cat /tmp/pr-checks.err || true
+            exit 1
+          fi
+
+          echo "Watching checks until they complete..."
+          gh pr checks "$PR_NUMBER" --watch --fail-fast --interval 15
+
+      - name: Merge pull request
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh pr merge "${{ steps.pr.outputs.number }}" \
-            --auto \
-            --merge
+            --merge \
+            --delete-branch=false
