@@ -51,37 +51,65 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
+          # Ignore this workflow's own check to avoid waiting on ourselves.
+          IGNORE_CHECK_PREFIX: "Promote bridge to main"
         run: |
-          echo "Waiting for checks on PR #$PR_NUMBER to start..."
+          echo "Waiting for external checks on PR #$PR_NUMBER..."
 
-          # Vercel (and other integrations) can take a moment to report.
-          for i in $(seq 1 40); do
-            if gh pr checks "$PR_NUMBER" > /tmp/pr-checks.txt 2>/tmp/pr-checks.err; then
-              :
+          for i in $(seq 1 120); do
+            CHECKS_JSON=$(gh pr checks "$PR_NUMBER" --json name,state,bucket 2>/tmp/pr-checks.err || true)
+
+            if [ -z "$CHECKS_JSON" ] || [ "$CHECKS_JSON" = "[]" ]; then
+              echo "No checks yet (attempt $i/120)..."
+              sleep 15
+              continue
             fi
 
-            if [ -s /tmp/pr-checks.txt ]; then
-              echo "Checks reported:"
-              cat /tmp/pr-checks.txt
-              break
-            fi
+            echo "$CHECKS_JSON" | jq -r --arg ignore "$IGNORE_CHECK_PREFIX" '
+              map(select(.name | startswith($ignore) | not))
+              | .[]
+              | "[\(.bucket)] \(.name)"
+            '
 
-            echo "No checks yet (attempt $i/40)..."
-            sleep 15
+            STATUS=$(echo "$CHECKS_JSON" | jq -r --arg ignore "$IGNORE_CHECK_PREFIX" '
+              map(select(.name | startswith($ignore) | not)) as $checks
+              | if ($checks | length) == 0 then
+                  "waiting_for_external"
+                elif ($checks | map(select(.bucket == "fail")) | length) > 0 then
+                  "FAILED"
+                elif ($checks | map(select(.bucket == "pending")) | length) > 0 then
+                  "PENDING"
+                else
+                  "READY"
+                end
+            ')
+
+            echo "status=$STATUS (attempt $i/120)"
+
+            case "$STATUS" in
+              READY)
+                echo "All external checks passed."
+                exit 0
+                ;;
+              FAILED)
+                echo "One or more required checks failed."
+                exit 1
+                ;;
+              *)
+                sleep 15
+                ;;
+            esac
           done
 
-          if [ ! -s /tmp/pr-checks.txt ]; then
-            echo "Timed out waiting for checks to start on PR #$PR_NUMBER"
-            cat /tmp/pr-checks.err || true
-            exit 1
-          fi
-
-          echo "Watching checks until they complete..."
-          gh pr checks "$PR_NUMBER" --watch --fail-fast --interval 15
+          echo "Timed out waiting for external checks on PR #$PR_NUMBER"
+          cat /tmp/pr-checks.err || true
+          exit 1
 
       - name: Merge pull request
         env:
-          GH_TOKEN: ${{ github.token }}
+          # Use a user PAT so the merge commit is authored by the Vercel Hobby
+          # project owner, not github-actions[bot].
+          GH_TOKEN: ${{ secrets.BRIDGE_MERGE_TOKEN }}
         run: |
           gh pr merge "${{ steps.pr.outputs.number }}" \
             --merge \
