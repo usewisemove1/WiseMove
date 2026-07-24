@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Create or find pull request
         id: pr
         env:
@@ -34,7 +37,9 @@ jobs:
               --title "Promote bridge to main" \
               --body "Automatically created after new changes were added to bridge.")
 
-            PR_NUMBER=$(gh pr view "$PR_URL" --json number --jq '.number')
+            PR_NUMBER=$(gh pr view "$PR_URL" \
+              --json number \
+              --jq '.number')
           fi
 
           echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
