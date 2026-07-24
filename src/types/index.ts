@@ -71,6 +71,11 @@ export interface Agent {
   responseTime: string;
   totalListings: number;
   rating: number;
+  yearsExperience: number;
+  propertiesSoldCount: number;
+  bio: string;
+  specializations: string[];
+  languages: string[];
 }
 
 export interface Country {
@@ -135,10 +140,111 @@ export interface PropertyAlert {
   id: string;
   label: string;
   location: string;
+  priceRange?: string;
   propertyType: "sale" | "rent" | "shortlet";
   isActive: boolean;
   matchCount: number;
   createdAt: Date;
+}
+
+export interface RecentSearch {
+  id: string;
+  query: string;
+}
+
+export type PropertyStructureType =
+  | "house"
+  | "apartment"
+  | "duplex"
+  | "land"
+  | "commercial";
+
+export type ListingListingType = "sale" | "rent" | "shortlet";
+
+export type ListingSizeUnit = "sqm" | "sqft";
+
+export type ListingPricePeriod =
+  | "one-time"
+  | "year"
+  | "month"
+  | "night"
+  | "week";
+
+export interface ListingPhoto {
+  id: string;
+  url: string;
+  file?: File;
+  isCover: boolean;
+}
+
+export interface ListingAmenityEntry {
+  icon: string;
+  label: string;
+  enabled: boolean;
+  description: string;
+}
+
+export interface ListingOwnershipProof {
+  id: string;
+  url: string;
+  name: string;
+  file?: File;
+}
+
+export interface ListingFormData {
+  title: string;
+  propertyType: PropertyStructureType | "";
+  listingType: ListingListingType | "";
+  bedrooms: number | null;
+  bathrooms: number | null;
+  size: number | null;
+  sizeUnit: ListingSizeUnit;
+  description: string;
+  addressLine: string;
+  city: string;
+  area: string;
+  latitude: number | null;
+  longitude: number | null;
+  photos: ListingPhoto[];
+  price: number | null;
+  pricePeriod: ListingPricePeriod | "";
+  negotiable: boolean;
+  amenities: ListingAmenityEntry[];
+  amenitiesSkipped: boolean;
+  ownershipProof: ListingOwnershipProof | null;
+}
+
+export type ListPropertyStep = 1 | 2 | 3 | 4 | 5 | 6;
+
+export type AlertFrequency = "instant" | "daily" | "weekly";
+
+export type AlertListingType = "sale" | "rent" | "shortlet";
+
+export interface SavedSearchAlert {
+  id: string;
+  location: string;
+  listingType: AlertListingType;
+  priceMin?: number;
+  priceMax?: number;
+  bedrooms: number | null;
+  frequency: AlertFrequency;
+  isActive: boolean;
+  matchCount: number;
+  createdAt: Date;
+}
+
+export interface PriceDropAlert {
+  id: string;
+  propertyId: string;
+  propertyTitle: string;
+  propertyCity: string;
+  propertyState: string;
+  propertyImage: string;
+  originalPrice: number;
+  newPrice: number;
+  priceType: AlertListingType;
+  droppedAt: Date;
+  isTrackingEnabled: boolean;
 }
 
 export interface User {

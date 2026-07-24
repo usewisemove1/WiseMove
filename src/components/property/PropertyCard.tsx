@@ -397,7 +397,7 @@ export default function PropertyCard({
       onMouseLeave={() => onHover?.(null)}
       className={cn(
         cardBaseStyles,
-        "group block overflow-hidden transition-all duration-200 hover:-translate-y-0.5",
+        "group block transition-all duration-200 hover:-translate-y-0.5",
         layout === "list" && "flex flex-col sm:flex-row",
         isHighlighted && "ring-2 ring-primary ring-offset-2"
       )}
