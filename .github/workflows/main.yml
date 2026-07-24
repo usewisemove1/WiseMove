@@ -1,0 +1,48 @@
+# .github/workflows/promote-bridge-to-main.yml
+name: Promote bridge to main
+
+on:
+  push:
+    branches:
+      - bridge
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create or find pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_NUMBER=$(gh pr list \
+            --base main \
+            --head bridge \
+            --state open \
+            --json number \
+            --jq '.[0].number')
+
+          if [ -z "$PR_NUMBER" ]; then
+            PR_URL=$(gh pr create \
+              --base main \
+              --head bridge \
+              --title "Promote bridge to main" \
+              --body "Automatically created after new changes were added to bridge.")
+
+            PR_NUMBER=$(gh pr view "$PR_URL" --json number --jq '.number')
+          fi
+
+          echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Enable auto-merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr merge "${{ steps.pr.outputs.number }}" \
+            --auto \
+            --merge
