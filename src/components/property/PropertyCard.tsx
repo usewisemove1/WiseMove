@@ -8,12 +8,13 @@ import {
   Eye,
   Heart,
   MapPin,
+  Mail,
   MessageCircle,
   Pencil,
   Shield,
   Square,
   TrendingDown,
-} from "lucide-react";
+  } from "lucide-react";
 
 import { cardBaseStyles, cn, formatPrice } from "@/lib/utils";
 import { getMockPropertyImage } from "@/lib/mockImages";
@@ -210,6 +211,10 @@ function SearchPropertyCard({
   const { isPropertySaved, saveProperty, unsaveProperty } = usePropertyStore();
   const saved = isPropertySaved(property.id);
   const imageUrl = propertyImageUrl(property);
+  const secondaryImage = property.images[1] ?? getMockPropertyImage(
+    property.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0) + 1
+  );
+  const period = getPricePeriodSuffix(property.priceType).replace("year", "yr");
 
   return (
     <article
@@ -222,94 +227,21 @@ function SearchPropertyCard({
         isHighlighted && "shadow-lg ring-2 ring-primary/30"
       )}
     >
-      <Link href={`/property/${property.id}`} className="block w-full">
-        <div className="relative h-[200px] w-full overflow-hidden bg-muted sm:h-[220px]">
-          <Image
-            src={imageUrl}
-            alt={property.title}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-300 hover:scale-[1.02]"
-          />
-
-          <div className="absolute left-2.5 top-2.5 z-10 flex flex-wrap gap-1.5">
-            {property.isPriceReduced && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-semibold text-white shadow-sm">
-                <TrendingDown className="h-3 w-3" aria-hidden="true" />
-                Price Reduced
-              </span>
-            )}
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#e8edd9] px-2 py-0.5 text-[11px] font-semibold text-[#3d4f2f] shadow-sm">
-              <Shield className="h-3 w-3" aria-hidden="true" />
-              Trust Score: {property.trustScore}/100
-            </span>
+      <div className="flex flex-col lg:flex-row">
+        <Link href={`/property/${property.id}`} className="shrink-0 lg:w-[55%]">
+          <div className="grid h-56 grid-cols-2 overflow-hidden bg-muted sm:h-64">
+            <div className="relative overflow-hidden"><Image src={imageUrl} alt={property.title} fill sizes="(max-width: 1024px) 100vw, 30vw" className="object-cover transition-transform duration-300 hover:scale-105" /></div>
+            <div className="relative overflow-hidden border-l border-white/80"><Image src={secondaryImage} alt="" fill sizes="(max-width: 1024px) 100vw, 30vw" className="object-cover transition-transform duration-300 hover:scale-105" /></div>
+            <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-foreground/85 px-2.5 py-1 text-xs font-bold text-white">▣ {property.images.length || 1} photos</span>
           </div>
-
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (saved) unsaveProperty(property.id);
-              else saveProperty(property);
-            }}
-            className="absolute right-2.5 top-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 shadow-md transition-colors hover:bg-white"
-            aria-label={saved ? "Remove from saved" : "Save property"}
-          >
-            <Heart
-              className={cn(
-                "h-4 w-4",
-                saved ? "fill-red-500 text-red-500" : "text-foreground"
-              )}
-            />
-          </button>
+          <div className="bg-muted/70 px-5 py-4"><p className="text-2xl font-bold text-foreground">{formatPrice(property.price, currencyCode)}<span className="text-base font-semibold text-muted-foreground">{period}</span></p><p className="mt-1 text-sm text-muted-foreground">{property.priceType === "rent" ? "Annual rent" : "Asking price"}</p></div>
+        </Link>
+        <div className="relative flex min-w-0 flex-1 flex-col p-5 lg:p-6">
+          <Link href={`/property/${property.id}`} className="pr-10"><h3 className="line-clamp-1 text-lg font-bold text-foreground hover:text-primary">{property.title}</h3><p className="mt-2 text-sm font-semibold text-foreground">{property.priceType === "sale" ? "For sale" : property.priceType === "shortlet" ? "Short let" : "For rent"} <span className="mx-3 text-border">|</span><Bed className="mr-1 inline h-4 w-4" />{property.bedrooms} <span className="ml-4"><Bath className="mr-1 inline h-4 w-4" />{property.bathrooms}</span></p><p className="mt-3 line-clamp-2 text-sm leading-6 text-muted-foreground">{property.description}</p></Link>
+          <button type="button" onClick={() => { if (saved) unsaveProperty(property.id); else saveProperty(property); }} className="absolute right-5 top-5 text-muted-foreground hover:text-primary" aria-label={saved ? "Remove from saved" : "Save property"}><Heart className={cn("h-6 w-6", saved && "fill-primary text-primary")} /></button>
+          <div className="mt-auto pt-5"><p className="text-sm font-semibold text-emerald-700">Verified listing · {formatListedAgo(property.listedAt)}</p><div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-border pt-4 text-sm font-semibold text-foreground"><span className="inline-flex items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded bg-primary text-xs font-bold text-white">A</span> WiseMove verified agent</span><a href={`https://wa.me/?text=${encodeURIComponent(`Hi, I'm interested in ${property.title}`)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-primary"><Mail className="h-5 w-5" /> Contact</a><button type="button" onClick={() => saved ? unsaveProperty(property.id) : saveProperty(property)} className="inline-flex items-center gap-2 hover:text-primary"><Heart className={cn("h-5 w-5", saved && "fill-primary text-primary")} /> Save</button></div></div>
         </div>
-
-        <div className="space-y-1.5 p-3 pb-11">
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-lg font-bold leading-tight text-foreground">
-              {formatPrice(property.price, currencyCode)}
-            </p>
-            <span className="shrink-0 text-[11px] text-muted-foreground">
-              {formatListedAgo(property.listedAt)}
-            </span>
-          </div>
-
-          <p className="line-clamp-1 text-xs text-muted-foreground">
-            <MapPin
-              className="mr-1 inline h-3.5 w-3.5 shrink-0 text-foreground/70"
-              aria-hidden="true"
-            />
-            {property.address}, {property.city}, {property.state}
-          </p>
-
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <Bed className="h-3.5 w-3.5" aria-hidden="true" />
-              {property.bedrooms} Beds
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <Bath className="h-3.5 w-3.5" aria-hidden="true" />
-              {property.bathrooms} Baths
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <Square className="h-3.5 w-3.5" aria-hidden="true" />
-              {sqmFromSqft(property.squareFootage).toLocaleString()} sqm
-            </span>
-          </div>
-        </div>
-      </Link>
-
-      <a
-        href={`https://wa.me/?text=${encodeURIComponent(`Hi, I'm interested in ${property.title}`)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={(e) => e.stopPropagation()}
-        className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-[#25D366] text-white shadow-md transition-transform hover:scale-105"
-        aria-label="Contact on WhatsApp"
-      >
-        <MessageCircle className="h-5 w-5" fill="currentColor" />
-      </a>
+      </div>
     </article>
   );
 }

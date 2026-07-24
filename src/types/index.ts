@@ -96,6 +96,8 @@ export interface Filter {
   trustScoreMin?: number;
   verifiedOnly?: boolean;
   city?: string;
+  state?: string;
+  amenities?: string[];
   country?: string;
   location?: string;
 }
