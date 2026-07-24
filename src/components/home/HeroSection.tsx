@@ -82,6 +82,9 @@ export default function HeroSection() {
           <p className="mt-4 text-sm text-white/85 sm:text-base">
             Every listing verified. Every agent checked.
           </p>
+          <Button asChild variant="outline" className="mt-6 border-white/50 bg-white/10 text-white hover:bg-white hover:text-primary">
+            <a href="/search">Browse all properties</a>
+          </Button>
         </div>
       </div>
     </section>

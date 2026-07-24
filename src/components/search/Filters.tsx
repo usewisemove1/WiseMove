@@ -41,6 +41,8 @@ const propertyTypeOptions = [
 
 const bedroomOptions = [1, 2, 3, 4, 5];
 const bathroomOptions = [1, 2, 3, 4];
+const stateOptions = ["Lagos", "FCT", "Rivers", "Oyo", "Ogun", "Abuja"];
+const amenityOptions = ["Swimming Pool", "Generator", "Parking", "Gym", "Security", "Waterfront"];
 
 const pillButtonClass =
   "h-9 shrink-0 rounded-full border border-border bg-white px-4 text-sm font-medium shadow-sm hover:bg-muted/50";
@@ -231,6 +233,18 @@ export default function Filters({ showMap, onShowMapChange }: FiltersProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className={pillButtonClass}>
+                {filters.state ?? "State"}<ChevronDown className="h-4 w-4 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="rounded-xl">
+              <DropdownMenuItem onClick={() => applyFilters({ state: undefined })}>All states</DropdownMenuItem>
+              {stateOptions.map((state) => <DropdownMenuItem key={state} onClick={() => applyFilters({ state })}>{state}</DropdownMenuItem>)}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className={pillButtonClass}>
                 {propertyTypeLabel === "All types"
                   ? "Property Type"
                   : propertyTypeLabel}
@@ -299,6 +313,16 @@ export default function Filters({ showMap, onShowMapChange }: FiltersProps) {
                 </div>
 
                 <div>
+                  <p className="mb-2 text-sm font-medium">Amenities</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {amenityOptions.map((amenity) => {
+                      const selected = filters.amenities?.includes(amenity) ?? false;
+                      return <label key={amenity} className="flex items-center gap-2 text-sm text-muted-foreground"><input type="checkbox" checked={selected} onChange={() => applyFilters({ amenities: selected ? filters.amenities?.filter((item) => item !== amenity) : [...(filters.amenities ?? []), amenity] })} className="rounded border-border text-primary" />{amenity}</label>;
+                    })}
+                  </div>
+                </div>
+
+                <div>
                   <div className="mb-3 flex items-center justify-between">
                     <p className="text-sm font-medium">Minimum Trust Score</p>
                     <span className="text-sm font-bold text-primary">
@@ -342,6 +366,20 @@ export default function Filters({ showMap, onShowMapChange }: FiltersProps) {
             <button
               type="button"
               role="tab"
+              aria-selected={!showMap}
+              onClick={() => onShowMapChange(false)}
+              className={cn(
+                  "rounded-md px-3 py-1.5 text-sm font-semibold transition-all sm:px-4",
+                  !showMap
+                      ? "bg-primary text-white shadow-sm"
+                      : "text-foreground hover:bg-muted/40"
+              )}
+          >
+            List view
+          </button>
+            <button
+              type="button"
+              role="tab"
               aria-selected={showMap}
               onClick={() => onShowMapChange(true)}
               className={cn(
@@ -352,20 +390,6 @@ export default function Filters({ showMap, onShowMapChange }: FiltersProps) {
               )}
             >
               Map view
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={!showMap}
-              onClick={() => onShowMapChange(false)}
-              className={cn(
-                "rounded-md px-3 py-1.5 text-sm font-semibold transition-all sm:px-4",
-                !showMap
-                  ? "bg-primary text-white shadow-sm"
-                  : "text-foreground hover:bg-muted/40"
-              )}
-            >
-              List view
             </button>
           </div>
         </div>

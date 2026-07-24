@@ -32,7 +32,7 @@ function SearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [mapOpen, setMapOpen] = useState(false);
-  const [showMap, setShowMap] = useState(true);
+  const [showMap, setShowMap] = useState(false);
   const { sortBy, setSortBy } = usePropertyStore();
 
   const { filters } = useMemo(
